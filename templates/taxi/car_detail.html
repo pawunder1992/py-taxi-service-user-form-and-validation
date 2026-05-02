@@ -3,20 +3,32 @@
 {% block content %}
   <h1>
     {{ car.model }}
-    <a href="{% url 'taxi:car-delete' pk=car.id %}" class="btn btn-danger link-to-page">
-      Delete
-    </a>
-
-    <a href="{% url 'taxi:car-update' pk=car.id %}" class="btn btn-secondary link-to-page">
-      Update
-    </a>
   </h1>
   <p>Manufacturer: ({{ car.manufacturer.name }}, {{ car.manufacturer.country }})</p>
-  <h1>Drivers</h1>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Drivers</h1>
+    {% if car  not in user.cars.all %}
+      <a href="{% url 'taxi:car-assign' pk=object.id %}" class="btn btn-success">
+        Assign me to this car
+      </a>
+    {% else %}
+      <a href="{% url 'taxi:delete-user-from-car' pk=object.id %}" class="btn btn-danger">
+        Delete me from this car
+      </a>
+    {% endif %}
+  </div>
   <hr>
   <ul>
     {% for driver in car.drivers.all %}
       <li>{{ driver.username }} ({{ driver.first_name }} {{ driver.last_name }})</li>
     {% endfor %}
   </ul>
+  <div class="d-flex justify-content-start">
+    <a href="{% url 'taxi:car-delete' pk=car.id %}" class="btn btn-danger link-to-page">
+      Delete
+    </a>
+    <a href="{% url 'taxi:car-update' pk=car.id %}" class="btn btn-secondary link-to-page">
+      Update
+    </a>
+  </div>
 {% endblock %}
