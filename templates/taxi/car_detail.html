@@ -7,21 +7,30 @@
   <p>Manufacturer: ({{ car.manufacturer.name }}, {{ car.manufacturer.country }})</p>
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Drivers</h1>
-    {% if car  not in user.cars.all %}
-      <a href="{% url 'taxi:car-assign' pk=object.id %}" class="btn btn-success">
-        Assign me to this car
-      </a>
+    {% if object not in user.cars.all %}
+      <form action="{% url 'taxi:car-assign' pk=object.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">
+          Assign me to this car
+        </button>
+      </form>
     {% else %}
-      <a href="{% url 'taxi:delete-user-from-car' pk=object.id %}" class="btn btn-danger">
-        Delete me from this car
-      </a>
+      <form action="{% url 'taxi:car-assign' pk=object.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+          Delete me from this car
+        </button>
+      </form>
     {% endif %}
   </div>
   <hr>
   <ul>
     {% for driver in car.drivers.all %}
       <li>{{ driver.username }} ({{ driver.first_name }} {{ driver.last_name }})</li>
+    {% empty %}
+      No drivers assigned to this car.
     {% endfor %}
+
   </ul>
   <div class="d-flex justify-content-start">
     <a href="{% url 'taxi:car-delete' pk=car.id %}" class="btn btn-danger link-to-page">
